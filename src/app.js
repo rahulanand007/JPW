@@ -2,7 +2,7 @@ import express from "express"
 import cors from "cors"
 import { connectDatabase } from "./config/database.js"
 import {router as user} from "./router/userRouter.js"
-import {router as auth} from "./router/googleAuth.js"
+import {router as googleAauth} from "./router/googleAuth.js"
 import { constants } from "./utils/constant.js"
 import passport from "passport"
 
@@ -15,7 +15,7 @@ import "./services/googleStrategy.js"
 
 
 
-//parse jason data in request body
+//parse json data in request body
 app.use(express.json())
 
 app.use(cors({
@@ -32,7 +32,7 @@ app.get("/",(req,res)=>{
 
 //Route imports
 app.use('/api/v1/user',user)
-app.use("/auth",auth)
+app.use("/auth",googleAauth)
 
 
 
