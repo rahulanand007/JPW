@@ -10,7 +10,7 @@ const googleLogin = new GoogleStrategy(
   {
     clientID: googleClient.clientID,
     clientSecret: googleClient.clientSecret,
-    callbackURL: `http://localhost:8000/auth/google/callback`,
+    callbackURL: googleClient.callbackUrl,
     proxy: true,
   },
   async (accessToken, refreshToken, profile, done) => {
