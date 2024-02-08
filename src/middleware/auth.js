@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken"
 import { User } from "../models/user.js"
+import { apiResponse } from "../utils/apiResponse.js"
+import {StatusCodes} from "http-status-codes"
 
 
 const isAuthenticated = async(req,res,next)=>{
@@ -7,13 +9,13 @@ const isAuthenticated = async(req,res,next)=>{
         const {token} = req.cookies
 
         if(!token){
-            return res.status(401).json({status:"ERR",message:"Please Login to access this resource"})
+            return apiResponse(res,"ERR","Please Login to access this resource",StatusCodes.UNAUTHORIZED)
         }
     
         const decodedData = jwt.verify(token,process.env.JWT_SECRET)
         let user = await User.findById(decodedData.id)
         if(!user){
-            return res.status(400).json({status:"ERR",message:"Invalid token or user doesn't exist"})
+            return apiResponse(res,"ERR","Invalid token or user doesn't exist",StatusCodes.BAD_REQUEST)
         }
         req.user =user
     
@@ -21,7 +23,7 @@ const isAuthenticated = async(req,res,next)=>{
         
     } catch (error) {
         console.log(error)
-        res.status(403).json({status:"ERR",message:"Unathorized"})
+        return apiResponse(res,"ERR","Unathorized",StatusCodes.FORBIDDEN)
     }
 }
 
