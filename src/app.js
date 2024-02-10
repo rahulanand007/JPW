@@ -12,7 +12,7 @@ import cookieParser from "cookie-parser"
 const app = express()
 
 
-
+//for google login
 app.use(passport.initialize());
 import "./services/googleStrategy.js"
 

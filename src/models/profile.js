@@ -40,7 +40,23 @@ const profileSchema = new mongoose.Schema({
                 type:String
             }
         }
-    ]
+    ],
+    visits: [{
+        visitor_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        },
+        visited_at: {
+            type: Date,
+            default: Date.now
+        }
+    }],
+    followers: [{
+        follower_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
+    }]
 
 })
 

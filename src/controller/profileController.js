@@ -56,5 +56,100 @@ const profileEdit =async(req,res)=>{
 }
 
 
-export {profileEdit}
+const deleteProfile = async (req, res) => {
+    try {
+
+        //Have to change this to delete user also if profile deleted
+        // Find the profile by user_id
+        const profile = await Profile.findOne({ user_id: req.user.id });
+
+        if (!profile) {
+            return apiResponse(res, "ERR", "Profile not found", StatusCodes.NOT_FOUND);
+        }
+
+        // Delete profile
+        await Profile.deleteOne({ user_id: req.user.id });
+
+        // Optionally, delete associated files or data for later phase
+
+        return apiResponse(res, "SUC", "Profile deleted successfully", StatusCodes.OK);
+    } catch (error) {
+        console.log(error);
+        return apiResponse(res, "ERR", error.message, StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+};
+
+
+
+const searchProfile = async (req, res) => {
+    try {
+        const { name, age, profession } = req.query;
+
+        // Prepare search criteria
+        const searchCriteria = {};
+        if (name) searchCriteria.name = name;
+        if (age) searchCriteria.age = age;
+        if (profession) searchCriteria.profession = profession;
+
+        // Search profiles
+        const profiles = await Profile.find(searchCriteria);
+
+        if (profiles.length === 0) {
+            return apiResponse(res, "SUC", "No profiles found", StatusCodes.OK);
+        }
+
+        return apiResponse(res, "SUC", "Profiles found successfully", StatusCodes.OK, profiles);
+    } catch (error) {
+        console.log(error);
+        return apiResponse(res, "ERR", error.message, StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+};
+
+const visitProfile = async (req, res) => {
+    try {
+        const { profileId } = req.params;
+
+        // Update the profile's visits array
+        await Profile.findByIdAndUpdate(profileId, {
+            $push: { visits: { visitor_id: req.user.id } }
+        });
+
+        return apiResponse(res, "SUC", "Profile visited successfully", StatusCodes.OK);
+    } catch (error) {
+        console.log(error);
+        return apiResponse(res, "ERR", error.message, StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+};
+
+const followProfile = async (req, res) => {
+    try {
+        const { profileId } = req.params;
+
+        // Check if already following
+        const profile = await Profile.findById(profileId);
+        const isFollowing = profile.followers.some(follower => follower.follower_id.equals(req.user.id));
+
+        if (isFollowing) {
+            // If already following, unfollow
+            await Profile.findByIdAndUpdate(profileId, {
+                $pull: { followers: { follower_id: req.user.id } }
+            });
+            return apiResponse(res, "SUC", "Unfollowed profile successfully", StatusCodes.OK);
+        } else {
+            // If not following, follow
+            await Profile.findByIdAndUpdate(profileId, {
+                $push: { followers: { follower_id: req.user.id } }
+            });
+            return apiResponse(res, "SUC", "Followed profile successfully", StatusCodes.OK);
+        }
+    } catch (error) {
+        console.log(error);
+        return apiResponse(res, "ERR", error.message, StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+};
+
+
+
+
+export {profileEdit,deleteProfile,searchProfile,visitProfile,followProfile}
 
