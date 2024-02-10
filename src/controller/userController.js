@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 import { User } from '../models/user.js'
 import { apiResponse } from '../utils/apiResponse.js'
-import { hashPassword } from '../utils/helper.js'
+import { hashPassword, sendToken } from '../utils/helper.js'
 
 const register = async (req, res) => {
     try {
@@ -55,14 +55,14 @@ const login =async(req,res)=>{
             return apiResponse(res, "ERR", "Invalid Credentials", StatusCodes.BAD_REQUEST)
         }
 
-        let token = user.getJwtToken()
-        return apiResponse(res, "SUC", "User LoggedIn Successfully", StatusCodes.OK, {token})
+        sendToken(res,user,200)
 
     } catch (error) {
         console.log(error)
         return apiResponse(res, "ERR", error.message,StatusCodes.INTERNAL_SERVER_ERROR)
     }
 }
+
 
 
 export { 
