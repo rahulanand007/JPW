@@ -7,7 +7,6 @@ const hashPassword = async(password)=>{
 
 const sendToken = async(res, user, statusCode) => {
     let token = user.getJwtToken()
-  
     //options for cookie
     const options = {
       expires: new Date(Date.now() + constants.cookie_expire * 24 * 60 * 60 * 1000),

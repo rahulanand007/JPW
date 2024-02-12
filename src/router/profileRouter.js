@@ -8,7 +8,7 @@ const router = express.Router()
 router.post("/edit",isAuthenticated,upload.single("profile_picture"),profileEdit)
 router.delete("/delete",isAuthenticated,deleteProfile)
 router.get("/search",isAuthenticated,searchProfile)
-router.post("/visitProfile",isAuthenticated,visitProfile)
-router.post("/followProfile",isAuthenticated,followProfile)
+router.post("/visitProfile/:profileId",isAuthenticated,visitProfile)
+router.post("/followProfile/:profileId",isAuthenticated,followProfile)
 
 export {router}
