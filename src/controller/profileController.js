@@ -108,7 +108,6 @@ const searchProfile = async (req, res) => {
 const visitProfile = async (req, res) => {
     try {
         const { profileId } = req.params;
-        console.log(profileId)
         if(!profileId){
             return apiResponse(res, "ERR", "Profile Id that you are visiting is required", StatusCodes.BAD_REQUEST);
         }
@@ -117,7 +116,6 @@ const visitProfile = async (req, res) => {
         await Profile.findByIdAndUpdate(profileId, {
             $push: { visits: { visitor_id: req.user.id } }
         }).then((result)=>{
-            console.log(result)
             return apiResponse(res, "SUC", "Profile visited successfully", StatusCodes.OK);
         });
 
