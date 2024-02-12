@@ -108,11 +108,12 @@ const searchProfile = async (req, res) => {
 const visitProfile = async (req, res) => {
     try {
         const { profileId } = req.params;
+        
         if(!profileId){
             return apiResponse(res, "ERR", "Profile Id that you are visiting is required", StatusCodes.BAD_REQUEST);
         }
 
-        // Update the profile's visits array
+        // Update the profile's visits array 
         await Profile.findByIdAndUpdate(profileId, {
             $push: { visits: { visitor_id: req.user.id } }
         }).then((result)=>{
@@ -132,6 +133,10 @@ const followProfile = async (req, res) => {
 
         // Check if already following
         const profile = await Profile.findById(profileId);
+        if(!profile){
+            return apiResponse(res, "ERR", "Invalid profileId or no profile exists", StatusCodes.BAD_REQUEST);
+        }
+
         const isFollowing = profile.followers.some(follower => follower.follower_id.equals(req.user.id));
 
         if (isFollowing) {
